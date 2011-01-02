@@ -1,0 +1,28 @@
+/*
+---
+
+name: HtmlTable
+
+description: Builds table elements with methods to add rows quickly, adds stripes to a table, allows you to sort via the table headers and gives you the ability to select rows in within a table.
+
+authors:
+  - subhaze
+
+keywords:
+  - HtmlTable
+  - Interface
+
+docs:
+  - name: HtmlTable
+    url: http://mootools.net/docs/more/Interface/HtmlTable
+  - name: HtmlTable.Zebra
+    url: http://mootools.net/docs/more/Interface/HtmlTable.Zebra
+  - name: HtmlTable.Sort
+    url: http://mootools.net/docs/more/Interface/HtmlTable.Sort
+  - name: HtmlTable.Select
+    url: http://mootools.net/docs/more/Interface/HtmlTable.Select
+
+...
+*/
+
+<p>Builds table elements with methods to add rows quickly, adds stripes to a table, allows you to sort via the table headers and gives you the ability to select rows in within a table.</p>
