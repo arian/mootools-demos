@@ -49,6 +49,11 @@
     font-weight: bold;
 }
 
+/** sorted table header reversed **/
+#table-container .table-th-sort-rev{
+    text-decoration: underline;
+}
+
 /** sorted table column **/
 #table-container .table-td-sort {
     background-color: #eee;
