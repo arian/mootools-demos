@@ -25,4 +25,10 @@ docs:
 ...
 */
 
-<p>Builds table elements with methods to add rows quickly, adds stripes to a table, allows you to sort via the table headers and gives you the ability to select rows in within a table.</p>
+<p id="html-table-details">Builds table elements with methods to:</p>
+ <ul>
+  <li>- add rows quickly</li>
+  <li>- add stripes to a table</li>
+  <li>- allow you to sort via the table headers</li>
+  <li>- and gives you the ability to select rows in within a table.</li>
+ </ul>
