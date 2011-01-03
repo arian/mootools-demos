@@ -24,6 +24,9 @@ window.addEvent('domready', function(){
 
     $$('.fireSelectEvent').addEvent('click', function(e){
         e.preventDefault();
-        myTable[this.get('text')]();
+        var method = this.get('text');
+        myTable[method]();
+        if(method === 'enableSelect') this.set('text', 'disableSelect');
+        else if(method === 'disableSelect') this.set('text', 'enableSelect');
     });
 });
