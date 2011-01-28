@@ -1,6 +1,16 @@
 <div id="table-container"></div>
 <div id="table-methods">
-    <a href="#" class="fireSelectEvent">selectAll</a>
-    <a href="#" class="fireSelectEvent">selectNone</a>
-    <a href="#" class="fireSelectEvent">disableSelect</a>
+	<input id="disableSelect" type="checkbox"><label for="disableSelect">Disable Select</label>
+	<input id="disableSort" type="checkbox"><label for="disableSort">Disable Sort</label><br />
+	<a href="#" class="fireSelectEvent">selectAll</a><br />
+	<a href="#" class="fireSelectEvent">selectNone</a><br />
+	<a href="#" id="toggleRow">toggle select first row</a><br />
+	<a href="#" id="addRow">add table row</a><br />
+	<a href="#" id="removeRows">remove <em>selected</em> rows</a><br />
+	<a href="#" id="addRemovedRows">add removed rows back</a><br />
+	<a id="toJSON" href="#">display JSON format of selected rows</a><br />
 </div>
+<div style="clear:both"></div>
+<h3>JSON output</h3>
+<hr />
+<code id="output"></code>
