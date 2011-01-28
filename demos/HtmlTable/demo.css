@@ -1,67 +1,72 @@
 /** main table styling **/
 #table-container table {
-    border-collapse: collapse;
+	border-collapse: collapse;
 }
 #table-container th, #table-container td {
-    padding: 3px;
+	padding: 3px;
 }
 #table-container th {
-    background-color: #6B7B95;
-    color: #fff;
-    border: none;
-    border-bottom: 1px solid #000;
-    cursor: pointer;
+	background-color: #6B7B95;
+	color: #fff;
+	border: none;
+	border-bottom: 1px solid #000;
+	cursor: pointer;
 }
 
 /** zebra stripes **/
 #table-container .table-tr-odd{
-    background-color: #a1afc4;
+	background-color: #a1afc4;
 }
 
 /** hovered table row **/
 #table-container .table-tr-hovered {
-    cursor: default;
-    background-color: #E79D35;
-    color: #fff;
+	cursor: default;
+	background-color: #78BA91;
+	color: #fff;
 }
 
 /** alternate color for zebra stripe for table column that is sorted **/
-#table-container .table-tr-odd .table-td-sort{
-    background-color: #c6ccd5;
+#table-container .table-sortable .table-tr-odd .table-td-sort{
+	background-color: #c6ccd5;
 }
 
 /** selected table row **/
-#table-container .table-tr-selected{
-    background-color: #E79D35;
-    color: #fff;
+#table-container .table-selectable .table-tr-selected{
+	background-color: #E79D35;
+	color: #fff;
 }
 
 /** alternate color for selected table row sorted column **/
-#table-container .table-tr-selected .table-td-sort {
-    background-color: #e9b366;
-    color: #fff;
+#table-container .table-selectable  .table-tr-selected .table-td-sort {
+	background-color: #e9b366;
+	color: #fff;
 }
 
 /** sorted table header **/
-#table-container .table-th-sort{
-    background-color: #b4c1d5;
-    color: #333;
-    font-weight: bold;
+#table-container .table-sortable .table-th-sort{
+	background-color: #b4c1d5;
+	color: #333;
+	font-weight: bold;
 }
 
 /** sorted table header reversed **/
-#table-container .table-th-sort-rev{
-    text-decoration: underline;
+#table-container .table-sortable .table-th-sort-rev{
+	text-decoration: underline;
 }
 
 /** sorted table column **/
-#table-container .table-td-sort {
-    background-color: #eee;
-    color: #000;
+#table-container .table-sortable .table-td-sort {
+	background-color: #eee;
+	color: #000;
 }
 
 /** alternate color for sorted column on hovered row **/
-#table-container .table-tr-hovered .table-td-sort{
-    background-color: #e9b366;
-    color: #fff;
+#table-container .table-sortable .table-tr-hovered .table-td-sort{
+	background-color: #abd5bb;
+	color: #fff;
+}
+
+#table-methods, #table-container{
+	width: 300px;
+	float: left;
 }
