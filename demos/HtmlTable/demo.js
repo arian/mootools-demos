@@ -1,4 +1,7 @@
 window.addEvent('domready', function(){
+
+	// This is where we create a new HtmlTable instance
+	// As you can see it has many options
 	var myTable = new HtmlTable({
 		properties: {
 			border: 1,
@@ -16,71 +19,47 @@ window.addEvent('domready', function(){
 		zebra: true,
 		sortable: true,
 		selectable: true,
-		onRowFocus: function(tr) {
-			tr.tween('opacity', [.5,1]);
+		onRowFocus: function(tr){
+			tr.tween('opacity', [.5, 1]);
 		}
 	});
 	myTable.inject($('table-container'));
 
 	// handles mouse clicks from disable/enable select links
-	$$('.fireSelectEvent').addEvent('click', function(e){
-		e.preventDefault();
-		var method = this.get('text');
-		myTable[method]();
+	$$('.fireSelectEvent').addEvent('click', function(event){
+		event.stop();
+		// selectAdd or selectNone methods to select rows
+		myTable[this.get('text')]();
 	});
 
-	$('toggleRow').addEvent('click', function(e){
-		e.preventDefault();
+	$('toggleRow').addEvent('click', function(event){
+		event.stop();
+		// Toggle a row between selected and unselected
 		myTable.toggleRow($(myTable).getElement('tbody tr'));
 	});
 
 	$('disableSelect').addEvent('click', function(){
-		var method = this.checked ? "disableSelect" : "enableSelect";
-		myTable[method]();
+		// We can enable and disable selecting rows with the disabableSelect and enableSelect methods
+		if (this.checked) myTable.disableSelect();
+		else myTable.enableSelect();
 	});
 
 	$('disableSort').addEvent('click', function(){
-		var method = this.checked ? "disableSort" : "enableSort";
-		myTable[method]();
+		// We can also enable and disable sorting of the table with the disableSort and enableSort methods
+		if (this.checked) myTable.disableSort();
+		else myTable.enableSort();
 	});
 
-	$('addRow').addEvent('click', function(e){
-		e.preventDefault();
+	$('addRow').addEvent('click', function(event){
+		event.stop();
+		// With the push method we can add new rows to the table
 		myTable.push([
 			$(myTable).getElements('tr').length,
 			'new fruit',
 			'new color',
-			Number.random(1,100),
+			Number.random(1, 100),
 			'02/24/2011'
 		]);
 	});
 
-	$('toJSON').addEvent('click', function(e){
-		e.preventDefault();
-		var jsonOutput = [];
-		myTable._selectedRows.each( function( item ){
-			var output = {},i;
-			for( i = 0; i < item.cells.length; i++) output[myTable.options.headers[i]] = item.cells[i].get('text');
-			jsonOutput.push(output);
-		});
-		$('output').set('text', JSON.encode(jsonOutput));
-	});
-	(function(){
-		var removedRows = [];
-		$('removeRows').addEvent('click', function(e){
-			e.preventDefault();
-			removedRows.combine($$(myTable._selectedRows).dispose());
-			myTable.updateZebras();
-		});
-		$('addRemovedRows').addEvent('click', function(e){
-			e.preventDefault();
-			myTable.body.adopt(removedRows);
-			removedRows.each(function(row){
-				myTable.deselectRow(row);
-			});
-			myTable.updateZebras();
-			myTable.reSort();
-			removedRows = [];
-		});
-	})();
 });
