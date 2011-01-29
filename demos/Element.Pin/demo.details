@@ -6,15 +6,19 @@ name: Element.Pin
 description: Extends the Element Type to include the pin method useful for fixed positioning for elements.
 
 authors:
-  - 
+  -
 
 docs:
   - name: Element.Pin
     url: http://mootools.net/docs/more/Element/Element.Pin
   - name: Element
     url: http://mootools.net/docs/core/Element/Element
- 
+
 ...
 */
 
-<p>Extends the Element Type to include the pin method useful for fixed positioning for elements.</p>
+
+<p>
+	Click <em>pin</em> to pin the element and try to scroll the page. You will notice that
+	the orange element will stay fixed on one position.
+</p>
