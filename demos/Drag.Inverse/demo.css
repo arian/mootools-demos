@@ -1,0 +1,11 @@
+#container {
+	width: 400px;
+	height: 300px;
+	overflow: auto;
+	cursor: move;
+}
+
+#container p {
+	margin: 30px;
+	width: 400px;
+}

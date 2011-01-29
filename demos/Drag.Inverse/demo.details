@@ -1,0 +1,23 @@
+/*
+---
+
+name: Inverse Drag
+
+description: A drag example showing how you could use the inverse drag option
+
+authors:
+
+
+docs:
+  - name: Drag
+    url: http://mootools.net/docs/more/Drag/Drag
+
+...
+*/
+
+<p>
+	The Drag options give you the ability to specify which modifiers should be
+	changed, in this example we want to change the scrollLeft and scrollRight
+	properties of the element. With the inverse option we inverse the effect.
+	This way you can drag the content to a certain position.
+</p>
