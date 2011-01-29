@@ -72,8 +72,6 @@ if (isset($demo) && !empty($css)): ?>
 					<li><a href="?demo=Request">Request</a></li>
 					<li><a href="?demo=Request.HTML">Request.HTML</a></li>
 					<li><a href="?demo=Request.JSON">Request.JSON</a></li>
-					<li><h4>Interface</h4></li>
-					<li><a href="?demo=HtmlTable">HtmlTable</a></li>
 					<li><h4>Plugins</h4></li>
 					<li><a href="?demo=Accordion">Accordion</a></li>
 					<li><a href="?demo=Slider">Slider</a></li>

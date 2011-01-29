@@ -15,8 +15,16 @@
 		<h2>MooTools More</h2>
 
 
+		<h3>Element</h3>
+
 		<ul>
 			<li><a href="?demo=Element.Pin">Element.Pin</a></li>
+		</ul>
+
+		<h3>Interface</h3>
+
+		<ul>
+			<li><a href="?demo=HtmlTable">HtmlTable</a></li>
 		</ul>
 
 	</div>
