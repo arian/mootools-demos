@@ -1,0 +1,81 @@
+
+#battleField {
+	position: relative;
+	width: 760px;
+	height: 500px;
+	background: url(demos/Class.Warriors/background.jpg) #333;
+}
+
+.warrior {
+	position: absolute;
+	width: 80px;
+	height: 200px;
+}
+
+#ninja {
+	top: 150px;
+	left: 100px;
+	width: 200px;
+	height: 300px
+}
+
+#knight {
+	top: 130px;
+	left: 500px;
+	width: 150px;
+	height: 250px;
+}
+
+.info {
+	position: absolute;
+	top: 10px;
+	width: 300px;
+}
+
+	.info .name {
+		color: white;
+		font-weight: bold;
+	}
+
+.energy {
+	height: 20px;
+	background: #9acd32;
+	width: 150px;
+	position: absolute;
+}
+
+#ninjaInfo {
+	left: 10px;
+}
+
+#knightInfo {
+	right: 10px;
+	text-align: right;
+}
+
+	#knightInfo .energy {
+		right: 0;
+	}
+
+#controlInfo {
+	position: absolute;
+	bottom: 0;
+	width: 760px;
+	background: black;
+	background: rgba(0, 0, 0, 0.5);
+	color: white;
+	font-family: monospace;
+	font-size: 1.1em;
+	overflow: hidden;
+}
+
+#controlInfo .ninja {
+	float: left;
+	padding: 3px 10px;
+}
+
+#controlInfo .knight {
+	float: right;
+	text-align: right;
+	padding: 3px 10px;
+}

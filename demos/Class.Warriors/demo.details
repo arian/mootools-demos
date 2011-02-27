@@ -1,0 +1,35 @@
+/*
+---
+
+name: Class.Warriors
+
+description: This is a game written with MooTools Classes
+
+authors:
+  - Arian Stolwijk
+
+docs:
+  - name: Class
+    url: http://mootools.net/docs/core/Class/Class
+  - name: Class.Extras
+    url: http://mootools.net/docs/core/Class/Class.Extras
+  - name: Fx
+    url: http://mootools.net/docs/core/Fx/Fx
+
+...
+*/
+
+<p>
+	This is a game written with the help of MooTools classes. Both warriors
+	are separate Classes, however they extend both the Warrior Class, which 
+	extends the Human Class which finally extends the Mammal Class.
+	The Mammal Class implements the Fx.Walk.Mixin, Fx.Sprite.Mixin,
+	BattleFieldObject, Events and Object Classes. Those add all generic
+	functionallity to the Mammal Class, and thus to our warriors.
+</p>
+
+<p>
+	The apples and bananas are Classes as well, and both extend the Food Class.
+	The food class even implements the same BattleFieldObject as the Mammal Class,
+	since they are both on the battle field and have coordinates.
+</p>

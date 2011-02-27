@@ -13,6 +13,13 @@
 	<div>
 
 		<h2>MooTools More</h2>
+		
+		<ul>
+			<li><a href="?demo=Class.Warriors">Class.Warriors</a></li>
+		</ul>
+
+
+		<h2>MooTools More</h2>
 
 		<ul>
 			<li><a href="?demo=Drag.Inverse">Inverse Drag</a></li>
