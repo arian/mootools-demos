@@ -366,14 +366,7 @@ var Human = new Class({
 
 	options: {
 		name: 'Bob'
-	}
-
-});
-
-// Warrior extends a human. This adds attack method
-var Warrior = new Class({
-
-	Extends: Human,
+	},
 
 	initialize: function(element, info, options){
 		this.parent(element, options);
@@ -397,7 +390,14 @@ var Warrior = new Class({
 		this.addEvent('reincarnate', function(){
 			energyBar.setStyle('background-color', originalColor);
 		});
-	},
+	}
+
+});
+
+// Warrior extends a human. This adds attack method
+var Warrior = new Class({
+
+	Extends: Human,
 
 	attack: function(prey){
 		if (this.sleeping) return this;
@@ -592,7 +592,6 @@ window.addEvent('domready', function(){
 			}
 		});
 	});
-
 
 });
 
