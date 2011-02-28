@@ -347,7 +347,7 @@ var BattleFieldObject = new Class({
 	},
 
 	setCoords: function(coords){
-		coords = Object.merge(this.$coords, coords);
+		Object.merge(this.$coords, coords);
 		return this;
 	},
 
@@ -411,6 +411,7 @@ var Mammal = new Class({
 	},
 
 	sleep: function(hours){
+		if (this.sleeping) return this;
 		this.detachWalk();
 		this.sleeping = true;
 		this.stopSprite();
@@ -489,10 +490,6 @@ var Warrior = new Class({
 
 	Extends: Human,
 
-	options: {
-		keys: {attack: 'u'}
-	},
-
 	attack: function(prey){
 		if (this.sleeping) return this;
 		if (instanceOf(prey, Human)){
@@ -528,8 +525,7 @@ var Ninja = new Class({
 
 	options: {
 		protection: 80,
-		power: 70,
-		specialWeapon: 'knife'
+		power: 70
 	}
 
 });
@@ -540,8 +536,7 @@ var Knight = new Class({
 
 	options: {
 		protection: 100, // strong armour :)
-		power: 50,
-		specialWeapon: 'grenade'
+		power: 50
 	}
 
 });
