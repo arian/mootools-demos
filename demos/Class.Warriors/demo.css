@@ -79,3 +79,10 @@
 	text-align: right;
 	padding: 3px 10px;
 }
+
+.weapon {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	background: red;
+}

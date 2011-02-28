@@ -183,7 +183,9 @@ Fx.Walk = new Class({
 		sign = (sign == null || sign > 0) ? 1 : -1;
 		if (!speed) speed = this.options.speed;
 		this.modify[direction] = sign * speed;
-		return this.parent();
+		this.parent();
+		this.frames = this.frame = 1;
+		return this;
 	},
 
 	stop: function(direction){
@@ -251,7 +253,91 @@ Fx.Walk.Mixin = new Class({
 	});
 });
 
-// Create Mixin for objects on the battlefied
+Fx.Gravity = new Class({
+
+	Extends: Fx,
+
+	options: {
+		limits: {x: [0, 760], y: [0, 500]},
+		modifiers: {x: 'left', y: 'top'},
+		speed: {x: 20, y: 0},
+		accel: {x: 0, y: 9.81},
+		bounce: {x: 0.2, y: 0.6},
+		minSpeed: 0.5
+	},
+
+	initialize: function(subject, options){
+		subject = this.subject = document.id(subject);
+		this.parent(options);
+		this.speed = this.options.speed;
+	},
+
+	step: function(now){
+		var dt = (this.time != null) ? (now - this.time) / 100 : 0,
+			t = 0;
+		this.time = now;
+		if (this.startTime == null) this.startTime = now;
+		else t = now - this.startTime;
+
+		var speedOld = Object.clone(this.speed),
+			accel = this.options.accel,
+			bounce = this.options.bounce,
+			limits = this.options.limits;
+
+		var position = Object.map(this.from, function(pos, z){
+			this.speed[z] += accel[z] * dt;
+			this.from[z] += this.speed[z] * dt;
+
+			limits[z].each(function(limit, side){
+				if ((side ? 1 : -1) * this.from[z] > limit){
+					this.from[z] = limit;
+					this.speed[z] *= bounce[z] * -1;
+				}
+			}, this);
+
+			return this.from[z];
+		}, this);
+
+		this.fireEvent('step', [position, this.subject]);
+		var styles = Object.values(position).associate(
+			Object.values(this.options.modifiers)
+		);
+		this.subject.setStyles(styles);
+
+		var x = this.speed.x - speedOld.x,
+			y = this.speed.y - speedOld.y,
+			z = this.options.minSpeed * this.options.minSpeed;
+		if (t > 500 && (x * x + y * y < z * z || t > 10000)) this.stop();
+		return this;
+	},
+
+	start: function(from, speed){
+		this.startTime = null;
+		if (speed) this.speed = speed;
+		this.parent(from || {x: 0, y: 0});
+		this.frames = this.frame = 1;
+		return this;
+	}
+
+});
+
+Fx.Gravity.Mixin = new Class({
+
+	$gravity: null,
+
+	initGravity: function(options){
+		this.$gravity = new Fx.Gravity(this.element, options);
+		return this;
+	},
+
+	drop: function(from){
+		this.$gravity.start(from);
+		return this;
+	}
+
+});
+
+// Create a base class for objects on the battlefied
 var BattleFieldObject = new Class({
 
 	$coords: {x: 0, y: 0, width: 0, height: 0},
@@ -261,7 +347,7 @@ var BattleFieldObject = new Class({
 	},
 
 	setCoords: function(coords){
-		Object.merge(this.$coords, coords);
+		coords = Object.merge(this.$coords, coords);
 		return this;
 	},
 
@@ -276,13 +362,22 @@ var BattleFieldObject = new Class({
 		return Math.sqrt(x * x + y * y);
 	}
 
+}).extend('calculateCoords', function(element){
+	return Object.map(Object.merge({
+		x: element.getStyle('left'),
+		y: element.getStyle('top')
+	}, element.getStyles('width', 'height')), function(value){
+		return value.toInt();
+	});
 });
 
 // This is where the interesing stuff begins
 // We create a base class for every mammels
 var Mammal = new Class({
 
-	Implements: [Fx.Walk.Mixin, BattleFieldObject, Fx.Sprite.Mixin, Options, Events],
+	Extends: BattleFieldObject,
+
+	Implements: [Fx.Walk.Mixin, Fx.Sprite.Mixin, Options, Events],
 
 	options: {
 		protection: 20,
@@ -302,12 +397,7 @@ var Mammal = new Class({
 		if (this.options.sprite) this.initSprite(this.options.sprite);
 
 		// Set initial coordinates
-		this.setCoords(Object.map(Object.merge({
-			x: element.getStyle('left'),
-			y: element.getStyle('top')
-		}, element.getStyles('width', 'height')), function(value){
-			return value.toInt();
-		}));
+		this.setCoords(BattleFieldObject.calculateCoords(element));
 
 		// Update coordinates when they change
 		this.$walker.addEvent('step', function(position){
@@ -399,6 +489,10 @@ var Warrior = new Class({
 
 	Extends: Human,
 
+	options: {
+		keys: {attack: 'u'}
+	},
+
 	attack: function(prey){
 		if (this.sleeping) return this;
 		if (instanceOf(prey, Human)){
@@ -415,6 +509,14 @@ var Warrior = new Class({
 			prey.fireEvent('attacked', prey.energy);
 		}
 		return this;
+	},
+
+	fire: function(target){
+		if (this.getWeapon){
+			var weapon = this.getWeapon();
+			weapon.fire(target);
+		}
+		return this;
 	}
 
 });
@@ -426,8 +528,8 @@ var Ninja = new Class({
 
 	options: {
 		protection: 80,
-		power: 70
-
+		power: 70,
+		specialWeapon: 'knife'
 	}
 
 });
@@ -438,16 +540,79 @@ var Knight = new Class({
 
 	options: {
 		protection: 100, // strong armour :)
-		power: 50
+		power: 50,
+		specialWeapon: 'grenade'
+	}
+
+});
+
+// Weapons
+var Weapon = new Class({
+
+	Extends: BattleFieldObject,
+
+	Implements: [Fx.Gravity.Mixin, Options, Events],
+
+	options: {
+		deadlyness: 10,
+		'class': 'weapon',
+		container: 'battleField',
+		gravity: {
+			limits: {x: [0, 740], y: [0, 480]},
+			speed: {y: -20, x: 50}
+		}
+	},
+
+	owner: null,
+
+	initialize: function(owner, options){
+		if (instanceOf(owner, Warrior)) this.owner = owner;
+		this.setOptions(options);
+		this.element = new Element('div', {
+			'class': this.options['class']
+		});
+
+		if (this.options.container) this.element.inject(this.options.container);
+		this.initGravity(this.options.gravity);
+		this.$gravity.addEvent('complete', function(subject){
+			subject.destroy.delay(500, subject);
+		});
+
+		this.$gravity.addEvent('step', function(current){
+			this.setCoords(current);
+			if (this.target && this.getDistanceTo(this.target) < 100){
+				this.fireEvent('inpact');
+				this.target.setEnergy(
+					this.target.energy
+					- this.options.deadlyness
+				);
+				this.$gravity.stop();
+				this.element.highlight();
+				this.element.destroy.delay(500, this.element);
+			}
+		}.bind(this));
+	},
+
+	fire: function(target){
+		var coords = this.owner.getCoords();
+		if (instanceOf(target, Warrior)) this.target = target;
+		this.drop({
+			x: coords.x + coords.width / 2,
+			y: coords.y + coords.height / 2
+		});
+		return this;
 	}
 
 });
 
 
+
 // Create some food, that will help the warriors regain some energy
 var Food = new Class({
 
-	Implements: [Options, BattleFieldObject],
+	Extends: BattleFieldObject,
+
+	Implements: Options,
 
 	options: {
 		energy: 5,
@@ -531,6 +696,9 @@ window.addEvent('domready', function(){
 			frames: 14
 		}
 	});
+	ninja.getWeapon = function(){
+		return new Weapon(ninja, {gravity: {speed: {x: 50}}});
+	};
 
 	warriors.ninja = ninja
 
@@ -548,6 +716,9 @@ window.addEvent('domready', function(){
 			frames: 14
 		}
 	});
+	knight.getWeapon = function(){
+		return new Weapon(knight, {gravity: {speed: {x: -50}}});
+	};
 
 	warriors.knight = knight;
 
@@ -558,9 +729,15 @@ window.addEvent('domready', function(){
 			case 'e': ninja.attack(knight); break;
 			case 'r': ninja.reincarnate(); break;
 			case 'q': ninja.sleep(); break;
+			case 'f': ninja.fire(knight); break;
+		}
+	});
+	document.addEvent('keydown:throttle(500)', function(event){
+		switch (event.key){
 			case 'u': knight.attack(ninja); break;
 			case 'y': knight.reincarnate(); break;
 			case 'o': knight.sleep(); break;
+			case 'h': knight.fire(ninja); break;
 		}
 	});
 
