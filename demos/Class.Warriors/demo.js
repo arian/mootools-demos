@@ -263,13 +263,13 @@ Fx.Gravity = new Class({
 		speed: {x: 20, y: 0},
 		accel: {x: 0, y: 9.81},
 		bounce: {x: 0.2, y: 0.6},
-		minSpeed: 0.5
+		minSpeed: 0.5,
+		duration: 20000
 	},
 
 	initialize: function(subject, options){
 		subject = this.subject = document.id(subject);
 		this.parent(options);
-		this.speed = this.options.speed;
 	},
 
 	step: function(now){
@@ -306,14 +306,16 @@ Fx.Gravity = new Class({
 
 		var x = this.speed.x - speedOld.x,
 			y = this.speed.y - speedOld.y,
-			z = this.options.minSpeed * this.options.minSpeed;
-		if (t > 500 && (x * x + y * y < z * z || t > 10000)) this.stop();
+			z = this.options.minSpeed;
+		if (t > 500 && ((x * x + y * y) < (z * z) || t > this.options.duration)) this.stop();
 		return this;
 	},
 
 	start: function(from, speed){
 		this.startTime = null;
-		if (speed) this.speed = speed;
+		this.speed = speed || Object.map(this.options.speed, function(speed){
+			return (typeOf(speed) == 'array') ? Number.random(speed[0], speed[1]) : speed;
+		});
 		this.parent(from || {x: 0, y: 0});
 		this.frames = this.frame = 1;
 		return this;
@@ -434,6 +436,7 @@ var Mammal = new Class({
 		this.fireEvent('energyChange', this.energy);
 		if (this.energy == 0){
 			this.detachWalk();
+			this.stopSprite();
 			this.fireEvent('die');
 		}
 		return this;
@@ -443,6 +446,7 @@ var Mammal = new Class({
 		if (this.energy == 0){
 			this.energy = 100;
 			this.attachWalk();
+			this.startSprite();
 			this.fireEvent('reincarnate').fireEvent('energyChange', 100);
 		}
 		return this;
@@ -490,15 +494,21 @@ var Warrior = new Class({
 
 	Extends: Human,
 
+	options: {
+		attackRange: 250,
+		power: 60,
+		armour: 70
+	},
+
 	attack: function(prey){
-		if (this.sleeping) return this;
+		if (this.sleeping || this.energy == 0) return this;
 		if (instanceOf(prey, Human)){
 			var distance = this.getDistanceTo(prey),
-				loose = (this.energy == 0) ? 0 : (
+				loose = (distance > this.options.attackRange) ? 0 : (
 						this.options.power * 0.5
 						+ this.energy * 0.3
 					) / (
-						prey.options.protection * 0.3
+						prey.options.armour * 0.3
 						* distance * 0.01
 					) * 10 ;
 
@@ -509,7 +519,7 @@ var Warrior = new Class({
 	},
 
 	fire: function(target){
-		if (this.getWeapon){
+		if (this.getWeapon && this.energy > 0){
 			var weapon = this.getWeapon();
 			weapon.fire(target);
 		}
@@ -524,8 +534,9 @@ var Ninja = new Class({
 	Extends: Warrior,
 
 	options: {
-		protection: 80,
-		power: 70
+		armour: 80,
+		power: 70,
+		attackRange: 300
 	}
 
 });
@@ -535,13 +546,15 @@ var Knight = new Class({
 	Extends: Warrior,
 
 	options: {
-		protection: 100, // strong armour :)
-		power: 50
+		armour: 100, // strong armour :)
+		power: 50,
+		attackRange: 250
 	}
 
 });
 
-// Weapons
+
+// Weapons that can be thrown
 var Weapon = new Class({
 
 	Extends: BattleFieldObject,
@@ -553,8 +566,8 @@ var Weapon = new Class({
 		'class': 'weapon',
 		container: 'battleField',
 		gravity: {
-			limits: {x: [0, 740], y: [0, 480]},
-			speed: {y: -20, x: 50}
+			limits: {x: [0, 730], y: [0, 470]},
+			speed: {x: [25, 30], y: [40, 50]}
 		}
 	},
 
@@ -566,26 +579,24 @@ var Weapon = new Class({
 		this.element = new Element('div', {
 			'class': this.options['class']
 		});
-
 		if (this.options.container) this.element.inject(this.options.container);
+
 		this.initGravity(this.options.gravity);
 		this.$gravity.addEvent('complete', function(subject){
 			subject.destroy.delay(500, subject);
-		});
-
+		}, true); // set as internal events (can't be removed)
 		this.$gravity.addEvent('step', function(current){
 			this.setCoords(current);
-			if (this.target && this.getDistanceTo(this.target) < 100){
+			if (this.target && this.target.energy && this.getDistanceTo(this.target) < 70){
 				this.fireEvent('inpact');
 				this.target.setEnergy(
 					this.target.energy
 					- this.options.deadlyness
 				);
 				this.$gravity.stop();
-				this.element.highlight();
 				this.element.destroy.delay(500, this.element);
 			}
-		}.bind(this));
+		}.bind(this), true);
 	},
 
 	fire: function(target){
@@ -599,7 +610,6 @@ var Weapon = new Class({
 	}
 
 });
-
 
 
 // Create some food, that will help the warriors regain some energy
@@ -692,7 +702,11 @@ window.addEvent('domready', function(){
 		}
 	});
 	ninja.getWeapon = function(){
-		return new Weapon(ninja, {gravity: {speed: {x: 50}}});
+		return new Weapon(ninja, {
+			gravity: {
+				speed: {x: [45, 50], y: [-20, -30]}
+			}
+		});
 	};
 
 	warriors.ninja = ninja
@@ -712,7 +726,11 @@ window.addEvent('domready', function(){
 		}
 	});
 	knight.getWeapon = function(){
-		return new Weapon(knight, {gravity: {speed: {x: -50}}});
+		return new Weapon(knight, {
+			gravity: {
+				speed: {x: [-40, -45], y: [-25, -30]}
+			}
+		});
 	};
 
 	warriors.knight = knight;

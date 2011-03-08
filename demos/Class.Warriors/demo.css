@@ -82,7 +82,7 @@
 
 .weapon {
 	position: absolute;
-	width: 20px;
-	height: 20px;
-	background: red;
+	width: 30px;
+	height: 30px;
+	background: url(demos/Class.Warriors/bomb.png) no-repeat;
 }
